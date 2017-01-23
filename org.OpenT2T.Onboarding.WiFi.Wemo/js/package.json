@@ -6,7 +6,7 @@
    "main": "thingOnboarding.js",
    "files": [
      "thingOnboarding.js",
-     "upnpDiscovery.js",
+     "ssdpDiscovery.js",
      "package.json"
    ],
    "repository": {

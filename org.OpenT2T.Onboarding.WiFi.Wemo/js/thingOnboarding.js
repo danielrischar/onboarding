@@ -1,4 +1,4 @@
-var ssdp = require('./upnpDiscovery');
+var ssdp = require('./ssdpDiscovery');
 /**
  * 
  */
