@@ -15,7 +15,7 @@ test.serial('discoverFlux', t => {
     }
 
     var discovery = new Onboarding();
-    return discovery.discover(foundDevice, 10000).then((d) => {
+    return discovery.discover(foundDevice, 10000).then(() => {
         t.true(devices.length > 0, "Expecting at least one device");
 
         var found = false;

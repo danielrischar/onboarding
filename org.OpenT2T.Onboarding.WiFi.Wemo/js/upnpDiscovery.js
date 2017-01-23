@@ -26,7 +26,7 @@ class Discovery {
 
         var deferred = q.defer();
         
-        var handleSsdpResponse = function(msg, statusCode, rinfo) {
+        var handleSsdpResponse = function(msg, statusCode) {
             // Get and parse the device details, and send it to the callback function
             this._getDeviceDetails(msg.LOCATION, callback);
         }.bind(this);

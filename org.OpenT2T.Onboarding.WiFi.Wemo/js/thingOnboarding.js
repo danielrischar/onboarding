@@ -3,10 +3,7 @@ var ssdp = require('./upnpDiscovery');
  * 
  */
 class Onboarding {
-    constructor() {
-    }
-
-    onboard(deviceInfo) {
+    onboard() {
         // Wemo devices have no authentication/onboarding requirements 
     }
 

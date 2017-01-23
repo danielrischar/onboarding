@@ -13,7 +13,7 @@ class Onboarding {
         this._discoveryMessage = 'HF-A11ASSISTHREAD';
     }
 
-    onboard(deviceInfo) {
+    onboard() {
         // Flux WiFi bulbs require no authentication.
     }
 

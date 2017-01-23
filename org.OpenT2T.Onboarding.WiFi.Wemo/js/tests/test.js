@@ -10,7 +10,7 @@ var configData = {
     port: 80
 }
 
-test.before(t => {
+test.before(() => {
     // Start a local weserver that will pretend to be a WeMo uPnP device and 
     // respond with the configuration data
     webServer = express();
@@ -21,7 +21,7 @@ test.before(t => {
     webServer.listen(configData.port);
 
     // Start a upnp server (device) that will be picked up in the search
-    var ssdpServer = new SsdpServer({
+    ssdpServer = new SsdpServer({
         location: configData.location
     });
 
@@ -42,7 +42,7 @@ test.serial('discoverSsdp', t => {
     }
 
     var discovery = new Onboarding();
-    return discovery.discover(foundDevice, 10000).then((d) => {
+    return discovery.discover(foundDevice, 10000).then(() => {
         t.true(devices.length > 0, "Expecting at least one device");
 
         var found = false;
