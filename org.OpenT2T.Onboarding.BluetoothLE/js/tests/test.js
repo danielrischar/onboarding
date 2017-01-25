@@ -1,6 +1,7 @@
 var test = require('ava');
 var Onboarding = require('../thingOnboarding.js');
 
+/** Discovers bluetooth devices.  Requires an actual device to be discoverable. */
 test.serial('discoverBLE', t => {
     var devices = [];
     var foundDevice = function(deviceInfo) {

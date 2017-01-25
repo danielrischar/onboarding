@@ -1,13 +1,14 @@
-
 var noble = require('noble');
 var q = require('q');
 
 class Onboarding {
 
-    onboard(authInfo) {
-        
+    onboard() {
     }
 
+    /** 
+     * Discovers Bluetooth LE devices for onboarding.
+     */
     discover(discoverCallback, timeout) {
         var deferred = q.defer();
 
@@ -23,8 +24,6 @@ class Onboarding {
         noble.on('discover', function(peripheral) {
             var advertisement = peripheral.advertisement;
 
-            if (advertisement.localName == "FluxBlue-C29C9809") {
-            this._getMoreData(peripheral);
             var deviceInfo = {
                 address: peripheral.address,
                 controlId: peripheral.id,
@@ -35,11 +34,9 @@ class Onboarding {
             if (discoverCallback && typeof discoverCallback === 'function') {
                 discoverCallback(deviceInfo);
             }
-            }
         }.bind(this));
 
         setTimeout(() => {
-            console.log("timeout");
             noble.stopScanning();
         }, timeout);
 
