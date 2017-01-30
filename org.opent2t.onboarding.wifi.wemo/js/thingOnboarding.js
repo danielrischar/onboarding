@@ -3,8 +3,22 @@ var ssdp = require('./ssdpDiscovery');
  * 
  */
 class Onboarding {
-    onboard() {
-        // Wemo devices have no authentication/onboarding requirements 
+
+    /**
+     * Onboards devices to 
+     */
+    onboard(onboardingInfo) {
+        // var onboardingInfo = {
+        //     ssid: "<ssid>",
+        //     password: "<wifi password>",
+        //     address: [
+        //           "192.168.1.27",
+        // };
+
+        // Perform onboarding for the device.
+        // For Wemo, this is 
+
+        return {onboardingInfo};
     }
 
     /**
