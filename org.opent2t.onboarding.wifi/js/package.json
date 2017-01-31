@@ -1,0 +1,28 @@
+{
+  "name": "opent2t-onboarding-org-opent2t-onboarding-wifi",
+  "version": "0.0.1",
+  "description": "Onboarding for WiFi devices",
+  "license": "MIT",
+  "main": "thingOnboarding.js",
+  "files": [
+    "thingOnboarding.js",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "githttps://github.com/openT2T/onboarding.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openT2T/onboarding/issues"
+  },
+  "homepage": "https://github.com/openT2T/onboarding#readme",
+  "dependencies": {
+    "ava": "^0.15.2",
+    "q": "^1.4.1",
+    "regex": "^0.1.1",
+    "wifi-control": "^2.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2"
+  }
+}

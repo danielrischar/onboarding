@@ -19,16 +19,18 @@ class Discovery {
     /**
      * Uses SSDP to discover uPnP devices on the current network that response to a specific urn (or all)
      */
-    discover(callback, timeout) {
+    discover(timeout) {
+        var devices = [];
+
         if (timeout) {
-            this.__discoveryTimeout = timeout;
+            this._discoveryTimeout = timeout;
         }
 
         var deferred = q.defer();
         
         var handleSsdpResponse = function(msg) {
             // Get and parse the device details, and send it to the callback function
-            this._getDeviceDetails(msg.LOCATION, callback);
+            devices.push(this._getDeviceDetails(msg.LOCATION));
         }.bind(this);
 
         // Start a search for each provider URN that is supported
@@ -41,7 +43,7 @@ class Discovery {
         // End the search after the timeout
         setTimeout(() => {
             ssdpClient.stop();
-            deferred.resolve();
+            deferred.resolve(devices);
         }, this._discoveryTimeout);
         
         return deferred.promise;
@@ -51,7 +53,8 @@ class Discovery {
      * Gets details from an SSDP device by performing a simple GET to the XML path provided in the
      * initial discovery.
      */
-    _getDeviceDetails(fullDeviceUrl, callback) {
+    _getDeviceDetails(fullDeviceUrl) {
+        var deferred = q.defer();
         var devicePath = Url.parse(fullDeviceUrl);
 
         // Do a get to the device
@@ -89,9 +92,7 @@ class Discovery {
                         }
                             
                         // Notify caller that a device was found.
-                        if (callback && typeof callback === 'function') {
-                            callback(deviceInfo);
-                        }
+                        deferred.resolve(deviceInfo);
                     }.bind(this));
                 } else {
                     handleRequestError(res.statusCode);
@@ -109,6 +110,8 @@ class Discovery {
         });
 
         req.end();
+
+        return deferred.promise;
     }
 }
 
