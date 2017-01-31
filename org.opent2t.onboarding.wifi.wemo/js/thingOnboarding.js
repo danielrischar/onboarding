@@ -2,6 +2,9 @@ var ssdp = require('./ssdpDiscovery');
 var q = require('q');
 //var Regex = require('regex');
 
+/**
+ * Discovers devices that correspond to known SSIDs
+ */
 function ssidDiscover(networks) {
     var devicesFound = [];
     
@@ -42,7 +45,7 @@ class Onboarding {
     onboard(onboardingInfo) {
 
         if (onboardingInfo.deviceType == "WiFi-AP") {
-            doOnboardFlow(onboardingInfo);
+            //doOnboardFlow(onboardingInfo);
         }
 
         return onboardingInfo;

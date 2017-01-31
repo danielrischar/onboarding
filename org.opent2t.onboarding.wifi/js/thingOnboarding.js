@@ -42,7 +42,7 @@ function findDiscoveryModules(discoveryType) {
 
     deferred.resolve([
         "opent2t-onboarding-org-opent2t-onboarding-wifi-wemo",
-        //"opent2t-onboarding-org-opent2t-onboarding-wifi-wemo"
+        "opent2t-onboarding-org-opent2t-onboarding-wifi-flux"
     ]);
 
     return deferred.promise;
