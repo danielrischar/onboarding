@@ -41,8 +41,8 @@ function findDiscoveryModules(discoveryType) {
     // *.wifi.<something>
 
     deferred.resolve([
-        "opent2t-onboarding-org-opent2t-onboarding-wifi-wemo",
-        "opent2t-onboarding-org-opent2t-onboarding-wifi-flux"
+        "opent2t-onboarding-org-opent2t-onboarding-wifi-wemo"
+        //"opent2t-onboarding-org-opent2t-onboarding-wifi-flux"
     ]);
 
     return deferred.promise;
@@ -57,7 +57,7 @@ class Onboarding {
      * Onboards devices to the network and performs any authentication setup that needs to be done.
      * 
      * @param {Object} oinboardingInfo
-     * @return authInfo that can be passed to a translator to interact with the device.
+     * @return object that can be passed to a translator to interact with the device.
      */
     onboard(onboardingInfo) {
         // There is no generic wifi onboarding, so each device need to be delegated to a speficic onboarder
@@ -85,7 +85,7 @@ class Onboarding {
         // Find all of the discovery modules
         return findDiscoveryModules("wifi").then( (modules) => {
 
-            // Scan for WiFi networks now
+            // Scan for WiFi networks now so each module doesn't need to do it
             return scanForWifiNetworks().then( (availableNetworks) => {
  
                 // Use each module to discover devices that may work with it
@@ -108,8 +108,6 @@ class Onboarding {
             });
         });
     }
-
-
 }
 
 module.exports = Onboarding;

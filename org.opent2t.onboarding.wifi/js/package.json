@@ -18,6 +18,7 @@
   "homepage": "https://github.com/openT2T/onboarding#readme",
   "dependencies": {
     "ava": "^0.15.2",
+    "crypto": "0.0.3",
     "q": "^1.4.1",
     "regex": "^0.1.1",
     "wifi-control": "^2.0.0"

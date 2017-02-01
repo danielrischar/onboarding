@@ -3,6 +3,7 @@ var q = require('q');
 var http = require('http');
 var Url = require('url');
 var xml2js = require('xml2js');
+var xmlbuilder = require('xmlbuilder');
 
 class Discovery {
     constructor(urn) {
@@ -30,7 +31,9 @@ class Discovery {
         
         var handleSsdpResponse = function(msg) {
             // Get and parse the device details, and send it to the callback function
-            devices.push(this._getDeviceDetails(msg.LOCATION));
+            this._getDeviceDetails(msg.LOCATION).then((deviceInfo) => {
+                devices.push(deviceInfo);
+            });
         }.bind(this);
 
         // Start a search for each provider URN that is supported
@@ -90,7 +93,7 @@ class Discovery {
                             friendlyName: result.root.device.friendlyName,
                             address: fullDeviceUrl
                         }
-                            
+                        
                         // Notify caller that a device was found.
                         deferred.resolve(deviceInfo);
                     }.bind(this));
@@ -113,6 +116,144 @@ class Discovery {
 
         return deferred.promise;
     }
+
+    /**
+     * Makes a SOAP formated reqeust to the host.
+     */
+    static soapRequestOld(hostInfo, serviceType, action, args) {
+        var deferred = q.defer();
+
+        var options = hostInfo;
+        options.method = 'POST';
+        options.headers = {
+            'SOAPACTION':  serviceType + '#' + action,
+            'Content-Type': 'text/xml; charset="utf-8"'
+        };
+        
+        var builder = new xml2js.Builder();
+        var soapXml = '<?xml version="1.0" encoding="utf-8"?>'
+                      +       '<s:Envelope'
+                      +          's:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/'
+                      +          'xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"'
+                      +          '<s:Body>'
+                      +              '<u:' + action + ' xmlns:u=' + serviceType + '>'
+                      +                  builder.buildObject(args)
+                      +              '</u:' + action + '>'
+                      +          '</s:Body>'
+                      +      '</s:Envelope>';
+
+        // console.log("Request to:");
+        // console.log(JSON.stringify(options, null, 2));
+        // console.log("Contents:");
+        // console.log(soapXml);
+        
+        var request = http.request(options, function(response) {
+            var body = "";
+            response.setEncoding('utf8');
+            
+            // Get the full response
+            response.on('data', (chunk) => {
+                body += chunk;
+            });
+
+            response.on('end', () => {
+                if (response.statusCode == 200) {
+                    xml2js.parseString(body, { explicitArray: false}, (result) => {
+                        deferred.resolve(result);
+                    });
+                } else {
+                    deferred.reject("Failed to make SOAP request");
+                }
+            });
+
+            response.on('error', (error) => {
+                deferred.reject("Could not make SOAP request");
+            })
+
+            req.write(data);
+            req.end();
+        }).catch((error) => {
+            deferred.reject(error);
+        });
+
+        return deferred.promise();
+    }
+
+
+    static request(options, data) {
+        var deferred = q.defer();
+        var req = http.request(options, (res) => {
+            var body = "";
+            res.setEncoding('utf8');
+            res.on('data', (chunk) => {
+                body += chunk;
+            });
+
+            res.on('end', () => {
+                if (res.statusCode === 200) {
+                    xml2js.parseString(body, { explicitArray: false }, (err, result) => {
+                        if (err) {
+                            defered.reject(err);
+                        } else {
+                            deferred.resolve(result);
+                        }
+                    });
+                } else {
+                    deferred.reject('HTTP ' + res.statusCode + ': ' + body);
+                }
+            });
+
+            res.on('error', (err) => {
+               deferred.reject("Error with response: " + err);
+            });
+        });
+
+        req.on('error', (err) => {
+            deferred.reject("Error with request: " + err);
+        });
+
+        if (data) {
+            req.write(data);
+        }
+
+        req.end();
+
+        return deferred.promise;
+    };
+
+    static soapRequest(hostInfo, serviceType, action, body) {
+        var cb = function(value) {
+            deferred.reject(value);
+        }
+
+        var xml = xmlbuilder.create('s:Envelope', {
+            version: '1.0',
+            encoding: 'utf-8',
+            allowEmpty: true
+        })
+        .att('xmlns:s', 'http://schemas.xmlsoap.org/soap/envelope/')
+        .att('s:encodingStyle', 'http://schemas.xmlsoap.org/soap/encoding/')
+        .ele('s:Body')
+        .ele('u:' + action)
+        .att('xmlns:u', serviceType);
+
+        var payload = (body ? xml.ele(body) : xml).end();
+
+        var options = {
+            host: hostInfo.host,
+            port: hostInfo.port,
+            path: hostInfo.path,
+            method: 'POST',
+            headers: {
+                'SOAPACTION': '"' + serviceType + '#' + action + '"',
+                'Content-Type': 'text/xml; charset="utf-8"'
+            }
+        };
+
+        return Discovery.request(options, payload).then( (response) => {
+            return response['s:Envelope']['s:Body']['u:' + action + 'Response'];
+        });
+    };
 }
 
 module.exports = Discovery;
