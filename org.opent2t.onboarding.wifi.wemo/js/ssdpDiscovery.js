@@ -91,7 +91,7 @@ class Discovery {
                             raw: result,
                             deviceType: result.root.device.deviceType,
                             friendlyName: result.root.device.friendlyName,
-                            address: fullDeviceUrl
+                            controlId: result.root.device.UDN
                         }
                         
                         // Notify caller that a device was found.
