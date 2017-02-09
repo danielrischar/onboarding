@@ -312,8 +312,8 @@ class Onboarding {
      */
     static discover(timeout, extraInfo) {
         // Find the access points that are available.
-        var foundDevices = ssidDiscover(extraInfo.networks);
-        console.log("Unpaired WeMo devices: " + foundDevices.length + " devices");
+        var foundDevices = [];//ssidDiscover(extraInfo.networks);
+        // console.log("Unpaired WeMo devices: " + foundDevices.length + " devices");
 
         var ssdpDiscover = new ssdp("urn:Belkin:service:basicevent:1");
         return ssdpDiscover.discover(timeout).then( devices => {
