@@ -300,9 +300,7 @@ class Onboarding {
         // No onboarding required for already paired devices,
         // discovery was enough to instantiate translators.
         // so the onboarding info is returned unchanged.
-        deviceInfo.then((deviceInfo) => {
-            return deviceInfo;
-        });
+        return {};
     }
 
     /**

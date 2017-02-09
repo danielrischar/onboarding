@@ -88,7 +88,7 @@ class Discovery {
                     // portability from here on out.
                     return xml2js.parseString(body, {explicitArray: false }, function(err, result) {
                         var deviceInfo = {
-                            raw: result,
+                            raw: result.root.device,
                             deviceType: result.root.device.deviceType,
                             friendlyName: result.root.device.friendlyName,
                             controlId: result.root.device.UDN
