@@ -47,6 +47,8 @@ class Onboarding {
                     authToken.convertTtlToExpiration(tokenInfo.expires_in)
                 );
                 
+                authTokens['access'].client_id = authInfo[1].client_id;
+                 
                 return authTokens;
             })
             .catch(function (err) {
