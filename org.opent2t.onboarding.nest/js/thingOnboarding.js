@@ -3,7 +3,7 @@
 
 'use strict';
 var request = require('request-promise');
-var accessTokenInfo = require('./common').accessTokenInfo;
+var authToken = require('./common').authToken;
 
 class Onboarding {
 
@@ -36,11 +36,17 @@ class Onboarding {
         return request(options)
             .then(function (body) {
                 var tokenInfo = JSON.parse(body); // This includes refresh token, scope etc..
-                console.log(tokenInfo);
-                return new accessTokenInfo(
+
+                // expires_in is the number of seconds until the token expires, which must be converted
+                // into a timestamp.
+
+                var authTokens = {};
+                authTokens['access'] = new authToken(
                     tokenInfo.access_token,
-                    tokenInfo.expires_in
+                    authToken.convertTtlToExpiration(tokenInfo.expires_in)
                 );
+                
+                return authTokens;
             })
             .catch(function (err) {
                 console.log("Request failed to: " + options.method + " - " + options.url);

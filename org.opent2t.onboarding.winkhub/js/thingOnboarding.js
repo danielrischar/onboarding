@@ -3,7 +3,7 @@
 
 'use strict';
 var request = require('request-promise');
-var accessTokenInfo = require('./common').accessTokenInfo;
+var authToken = require('./common').authToken;
 
 class Onboarding {
 
@@ -42,12 +42,24 @@ class Onboarding {
             .then(function (body) {
                 var tokenInfo = JSON.parse(body); // This includes refresh token, scope etc..
                 
-                return new accessTokenInfo(
+                var authTokens = {};
+                authTokens['access'] = new authToken(
                     tokenInfo.access_token,
-                    tokenInfo.refresh_token,
+                    0,
                     tokenInfo.token_type,
                     tokenInfo.scopes
                 );
+
+                authTokens['refresh'] = new authToken(
+                    tokenInfo.access_token,
+                    undefined,
+                    tokenInfo.token_type,
+                    tokenInfo.scopes
+                );
+
+                console.log(JSON.stringify(authTokens, null, 2));
+                
+                return authTokens;
             })
             .catch(function (err) {
                 console.log("Request failed to: " + options.method + " - " + options.url);
