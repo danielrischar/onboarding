@@ -35,10 +35,11 @@ class Onboarding {
 
         return request(options)
             .then(function (body) {
-                var tokenInfo = JSON.parse(body); // This includes refresh token, scope etc..
+                var tokenInfo = JSON.parse(body);
 
-                // expires_in is the number of seconds until the token expires, which must be converted
-                // into a timestamp.
+                // Nest does not support refresh_tokens, and instead the access token has an expiration 10 years
+                // in the future.  This expiration is in seconds from right now, so must be converted into
+                // a Unix epoch based time stamp.
 
                 var authTokens = {};
                 authTokens['access'] = new authToken(

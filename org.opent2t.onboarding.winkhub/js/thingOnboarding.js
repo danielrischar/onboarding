@@ -42,17 +42,20 @@ class Onboarding {
             .then(function (body) {
                 var tokenInfo = JSON.parse(body); // This includes refresh token, scope etc..
                 
+                // Wink doesn't return an expiration, so set it to 24 hours
+                var expiration = Math.floor(new Date().getTime() / 1000) + 86400;
+
                 var authTokens = {};
                 authTokens['access'] = new authToken(
                     tokenInfo.access_token,
-                    0,
+                    expiration,
                     tokenInfo.token_type,
                     tokenInfo.scopes
                 );
 
                 authTokens['refresh'] = new authToken(
-                    tokenInfo.access_token,
-                    undefined,
+                    tokenInfo.refresh_token,
+                    expiration,
                     tokenInfo.token_type,
                     tokenInfo.scopes
                 );

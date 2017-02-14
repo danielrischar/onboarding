@@ -26,7 +26,7 @@ class authToken {
      * (number of seconds from the epoch).
      */
     static convertTtlToExpiration(ttlInSeconds) {
-        new (Date().getTime() / 1000) + ttlInSeconds;
+        return Math.floor((new Date().getTime() / 1000) + ttlInSeconds);
     }
 }
 
