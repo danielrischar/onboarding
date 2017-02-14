@@ -3,7 +3,6 @@
 
 'use strict';
 var request = require('request-promise');
-var authToken = require('./common').authToken;
 
 class Onboarding {
 
@@ -40,15 +39,17 @@ class Onboarding {
                 var tokenInfo = JSON.parse(body); // This includes refresh token, scope etc..
 
                 var authTokens = {};
-                authTokens['access'] = new authToken(
-                    tokenInfo.access_token,
-                    authToken.convertTtlToExpiration(tokenInfo.expires_in),
-                    tokenInfo.token_type,
-                    tokenInfo.scope
-                );
+                authTokens['access'] = {
+                    token: tokenInfo.access_token,
+                    
+                    // Conver the TTL into a timestamp
+                    expiration: Math.floor((new Date().getTime() / 1000) + tokenInfo.expires_in),
+                    type: tokenInfo.token_type,
+                    scopes: tokenInfo.scope,
 
-                // SmartThings requires the client_id for the endpoint URL
-                authTokens['access'].client_id = authInfo[0].client_id;
+                    // SmartThings requires the client_id for the endpoint URL
+                    client_id: authInfo[0].client_id
+                };
                 
                 return authTokens;
             })

@@ -3,7 +3,6 @@
 
 'use strict';
 var request = require('request-promise');
-var authToken = require('./common').authToken;
 
 class Onboarding {
 
@@ -38,14 +37,15 @@ class Onboarding {
                 var tokenInfo = JSON.parse(body);
 
                 // Nest does not support refresh_tokens, and instead the access token has an expiration 10 years
-                // in the future.  This expiration is in seconds from right now, so must be converted into
-                // a Unix epoch based time stamp.
+                // in the future.
 
                 var authTokens = {};
-                authTokens['access'] = new authToken(
-                    tokenInfo.access_token,
-                    authToken.convertTtlToExpiration(tokenInfo.expires_in)
-                );
+                authTokens['access'] = {
+                    token: tokenInfo.access_token,
+                    
+                    // expires_in is a duration in seconds and needs to be a timestamp
+                    expiration: Math.floor((new Date().getTime() / 1000) + tokenInfo.expires_in);
+                }
                 
                 return authTokens;
             })
